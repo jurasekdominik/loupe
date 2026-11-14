@@ -25,7 +25,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         _showItem = MenuAction("Show loupe", AppCommand.ToggleLoupe);
         _enabledItem = MenuAction("Enabled", AppCommand.ToggleEnabled);
         _inspectMenu = new ToolStripMenuItem("Inspection"); Theme.StyleMenu(_inspectMenu.DropDown);
-        foreach (var command in new[] { AppCommand.TogglePin, AppCommand.ToggleMeasure, AppCommand.ToggleGrid, AppCommand.Clear, AppCommand.CaptureArea, AppCommand.CaptureView })
+        foreach (var command in new[] { AppCommand.TogglePin, AppCommand.ToggleFreeze, AppCommand.ToggleMeasure, AppCommand.ToggleGrid, AppCommand.Clear, AppCommand.CaptureArea, AppCommand.CaptureView })
             _inspectMenu.DropDownItems.Add(MenuAction(CommandCatalog.Get(command).Label, command));
         _menu.Items.AddRange([
             _showItem, _enabledItem, _inspectMenu, new ToolStripSeparator(),
@@ -118,6 +118,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
                 {
                     case AppCommand.Hide: Dismiss(); break;
                     case AppCommand.TogglePin: _lens.TogglePin(); break;
+                    case AppCommand.ToggleFreeze: _lens.ToggleFreeze(); break;
                     case AppCommand.ToggleMeasure: _lens.ToggleMeasure(); break;
                     case AppCommand.ToggleGrid: _lens.ToggleGrid(); break;
                     case AppCommand.Clear: _lens.ClearGuides(); break;

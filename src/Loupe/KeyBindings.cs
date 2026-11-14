@@ -9,7 +9,7 @@ public enum AppCommand
 {
     ToggleLoupe = 1, ToggleEnabled, Peek, Hide, TogglePin, ToggleMeasure, Clear,
     ToggleGrid, ZoomIn, ZoomOut, GuideHorizontal, GuideVertical, CaptureArea, CaptureView,
-    PanLeft, PanRight, PanUp, PanDown, IncreaseSize, DecreaseSize, OpenSettings, OpenCaptureFolder, Exit, GuideCrosshair, RulerPoint
+    PanLeft, PanRight, PanUp, PanDown, IncreaseSize, DecreaseSize, OpenSettings, OpenCaptureFolder, Exit, GuideCrosshair, RulerPoint, ToggleFreeze
 }
 
 public sealed record KeyBinding(Keys Key = Keys.None, KeyModifiers Modifiers = KeyModifiers.None)
@@ -74,6 +74,7 @@ public static class CommandCatalog
         new(AppCommand.Peek, "Hold to peek", new(Keys.Space, CA)),
         new(AppCommand.Hide, "Dismiss loupe", new(Keys.Escape), WhileVisible: true),
         new(AppCommand.TogglePin, "Pin / follow area", new(Keys.L, CA), WhileVisible: true),
+        new(AppCommand.ToggleFreeze, "Freeze / resume image", new(), WhileVisible: true),
         new(AppCommand.ToggleMeasure, "Measurement mode", new(Keys.M, CA), WhileVisible: true),
         new(AppCommand.Clear, "Clear guides & ruler", new(Keys.Back, CA), WhileVisible: true),
         new(AppCommand.ToggleGrid, "Pixel grid", new(Keys.G, CA), WhileVisible: true),

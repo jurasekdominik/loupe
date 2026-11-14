@@ -27,6 +27,7 @@ internal sealed class LensForm : OverlayForm
 
     public bool Pinned { get; private set; }
     public bool Measuring { get; private set; }
+    public bool Frozen => _capture?.Frozen == true;
     public bool ContainsPointer
     {
         get
@@ -181,7 +182,7 @@ internal sealed class LensForm : OverlayForm
             // Following or pinned: the pixel at the crosshair. Measuring: the boundary under the pointer, or how to start.
             string status = _measurement?.Label ?? (_hover is { } p ? $"X {p.X}   Y {p.Y}"
                 : Measuring ? "Drag: ruler · Right-click: guides" : $"X {_center.X}   Y {_center.Y}");
-            _strip.UpdateState(_settings, Pinned, Measuring, status);
+            _strip.UpdateState(_settings, Pinned, Measuring, Frozen, status);
             if (!Visible)
             {
                 // Present into the hidden composition target first. Neither HWND
@@ -212,6 +213,17 @@ internal sealed class LensForm : OverlayForm
     {
         Pinned = !Pinned;
         if (!Pinned && Measuring) SetMeasuring(false);
+        if (!Pinned && _capture is not null) _capture.Frozen = false;
+        Latched?.Invoke();
+        _dirty = true;
+    }
+
+    // Like Pin, but the image itself stops updating until resumed. It stays zoomable and measurable.
+    public void ToggleFreeze()
+    {
+        if (_capture is null) return;
+        _capture.Frozen = !_capture.Frozen;
+        if (Frozen) Pinned = true;
         Latched?.Invoke();
         _dirty = true;
     }

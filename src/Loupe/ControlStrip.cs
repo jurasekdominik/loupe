@@ -2,13 +2,13 @@ namespace Loupe;
 
 internal sealed class ControlStrip : OverlayForm
 {
-    public const int LogicalWidth = 512, LogicalHeight = 84;
-    private readonly Button _pin, _measure, _grid;
+    public const int LogicalWidth = 566, LogicalHeight = 84;
+    private readonly Button _pin, _freeze, _measure, _grid;
     private readonly Label _zoom, _status, _live;
     private readonly ToolTip _toolTip = new();
     private readonly ContextMenuStrip _captureMenu = new();
     private readonly Dictionary<AppCommand, Button> _buttons = [];
-    private (bool Pinned, bool Measuring, bool Grid, int Zoom)? _lastState;
+    private (bool Pinned, bool Measuring, bool Frozen, bool Grid, int Zoom)? _lastState;
     private string _lastStatus = "", _notice = "";
     private DateTime _noticeUntil;
     public bool HasOpenMenu => _captureMenu.Visible;
@@ -32,7 +32,8 @@ internal sealed class ControlStrip : OverlayForm
         }
         layout.Controls.Add(header, 0, 0);
         var controls = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false, Margin = Padding.Empty };
-        _pin = ActionButton("Pin", AppCommand.TogglePin, 58);
+        _pin = ActionButton("Pin", AppCommand.TogglePin, 44);
+        _freeze = ActionButton("Freeze", AppCommand.ToggleFreeze, 60);
         _measure = ActionButton("Measure", AppCommand.ToggleMeasure, 74);
         _grid = ActionButton("Grid", AppCommand.ToggleGrid, 46);
         var minus = ActionButton("−", AppCommand.ZoomOut, 28);
@@ -43,7 +44,7 @@ internal sealed class ControlStrip : OverlayForm
         capture.TabStop = false;
         var close = ActionButton("×", AppCommand.Hide, 28);
         ((ShadeButton)close).Ghost = true;
-        controls.Controls.AddRange([_pin, _measure, _grid, minus, _zoom, plus, clear, capture, close]);
+        controls.Controls.AddRange([_pin, _freeze, _measure, _grid, minus, _zoom, plus, clear, capture, close]);
         Theme.StyleMenu(_captureMenu);
         foreach (var command in new[] { AppCommand.CaptureArea, AppCommand.CaptureView })
         {
@@ -87,14 +88,14 @@ internal sealed class ControlStrip : OverlayForm
         _notice = ""; return true;
     }
 
-    public void UpdateState(AppSettings settings, bool pinned, bool measuring, string status)
+    public void UpdateState(AppSettings settings, bool pinned, bool measuring, bool frozen, string status)
     {
-        var state = (pinned, measuring, settings.ShowGrid, settings.Zoom);
+        var state = (pinned, measuring, frozen, settings.ShowGrid, settings.Zoom);
         if (_lastState != state)
         {
             _zoom.Text = $"{settings.Zoom}×"; // Pin and Measure keep their names; the highlight shows the state.
-            Theme.SetActive(_pin, pinned); Theme.SetActive(_measure, measuring); Theme.SetActive(_grid, settings.ShowGrid);
-            _live.Text = pinned ? "●  LIVE · PINNED" : "●  LIVE · FOLLOWING";
+            Theme.SetActive(_pin, pinned); Theme.SetActive(_freeze, frozen); Theme.SetActive(_measure, measuring); Theme.SetActive(_grid, settings.ShowGrid);
+            _live.Text = frozen ? "●  FROZEN" : pinned ? "●  LIVE · PINNED" : "●  LIVE · FOLLOWING";
             _live.ForeColor = measuring ? Theme.Pink : Theme.Sky;
             _lastState = state;
         }

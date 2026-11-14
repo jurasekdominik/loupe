@@ -64,7 +64,7 @@ internal sealed class SettingsForm : Form
         var additional = new TableLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 2, RowCount = 0, Margin = Padding.Empty, Dock = DockStyle.Top, Visible = false };
         additional.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 46)); additional.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 54));
         AddGroup(additional, "App", [AppCommand.ToggleEnabled, AppCommand.Peek, AppCommand.Hide, AppCommand.OpenSettings, AppCommand.OpenCaptureFolder, AppCommand.Exit]);
-        AddGroup(additional, "Lens", [AppCommand.Clear, AppCommand.ToggleGrid, AppCommand.IncreaseSize, AppCommand.DecreaseSize]);
+        AddGroup(additional, "Lens", [AppCommand.ToggleFreeze, AppCommand.Clear, AppCommand.ToggleGrid, AppCommand.IncreaseSize, AppCommand.DecreaseSize]);
         AddGroup(additional, "Guides & ruler", [AppCommand.GuideHorizontal, AppCommand.GuideVertical, AppCommand.GuideCrosshair, AppCommand.RulerPoint]);
         AddGroup(additional, "Pan", [AppCommand.PanLeft, AppCommand.PanRight, AppCommand.PanUp, AppCommand.PanDown]);
         AddGroup(additional, "Screenshots", [AppCommand.CaptureArea, AppCommand.CaptureView]);

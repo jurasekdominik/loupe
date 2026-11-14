@@ -31,11 +31,12 @@ Settings → Shortcuts shows the five main bindings. Click a binding, press and 
 
 1. Point at the area to inspect and show the loupe. Its location stays fixed, with the source following your pointer. Following pauses over the lens, toolbar and capture menu.
 2. **Pin** fixes the sampled area while keeping the image live. Ordinary viewing passes mouse clicks through to the application underneath. Showing the loupe does not take keyboard focus.
-3. **Measure** pins the area and makes its enlarged pixels interactive. Crosshair guides snap to source pixel boundaries.
-4. **Left-drag** to measure width and height, or use the ruler-point binding twice. A three-pixel gap reads **3 px** at every zoom level.
-5. **Right-click** to pin both crosshair guides; use the horizontal/vertical bindings for one guide. Repeat at the same boundary to remove it.
-6. **Middle-drag**, or use the pan bindings, to move the sampled area. Guides and ruler endpoints retain their original screen coordinates.
-7. Leave measurement mode to pass clicks through again. Guides remain until cleared, including across hiding and reopening the lens; they reset when Loupe exits or the monitor changes. The ruler starts fresh on each reopen.
+3. **Freeze** pins the area and also stops the image, like a snapshot of the whole monitor. Zoom, pan, guides, the ruler and captures all work on the frozen image. Press Freeze again, or unpin, to return to the live screen. Its shortcut is optional and unassigned by default.
+4. **Measure** pins the area and makes its enlarged pixels interactive. Crosshair guides snap to source pixel boundaries.
+5. **Left-drag** to measure width and height, or use the ruler-point binding twice. A three-pixel gap reads **3 px** at every zoom level.
+6. **Right-click** to pin both crosshair guides; use the horizontal/vertical bindings for one guide. Repeat at the same boundary to remove it.
+7. **Middle-drag**, or use the pan bindings, to move the sampled area. Guides and ruler endpoints retain their original screen coordinates.
+8. Leave measurement mode to pass clicks through again. Guides remain until cleared, including across hiding and reopening the lens; they reset when Loupe exits or the monitor changes. The ruler starts fresh on each reopen.
 
 The right side of the toolbar's header shows, in blue, the X/Y of the pixel at the crosshair while following or pinned, the boundary under the pointer while measuring, and the ruler's width and height once one is placed.
 

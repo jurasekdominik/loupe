@@ -159,6 +159,23 @@ internal static class SmokeTest
                         _settings.ShowGrid = false;
                         CheckPixels("reopened.png");
                         _passed.Add("Capture resources can be released and reopened");
+                        _lens!.ToggleFreeze();
+                        if (!_lens.Frozen) throw new InvalidOperationException("The image could not be frozen.");
+                        _inverted = false;
+                        UpdatePattern();
+                        Invalidate(new Rectangle(100, 100, 256, 256));
+                        Update();
+                        break;
+                    case 8:
+                        _inverted = true; // The screen has changed; the frozen lens must still show the earlier pattern.
+                        CheckPixels("frozen.png");
+                        _passed.Add("A frozen image ignores later source changes");
+                        _lens!.ToggleFreeze();
+                        break;
+                    case 9:
+                        _inverted = false;
+                        CheckPixels("resumed.png");
+                        _passed.Add("Resuming shows the current screen again");
                         Complete();
                         break;
                 }
