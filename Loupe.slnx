@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Loupe/Loupe.csproj" />
+  <Project Path="tests/Loupe.Tests/Loupe.Tests.csproj" />
+</Solution>

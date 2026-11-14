@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <title>Loupe — blue glass optic</title>
+  <desc>Concept 04: blue glass lens, one rounded blue UI panel, and cyan pixel alignment guides. Native vector artwork with transparent exterior.</desc>
+  <defs>
+    <linearGradient id="tile" x1="75" y1="15" x2="430" y2="499" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07131d"/><stop offset=".52" stop-color="#020b13"/><stop offset="1" stop-color="#01080e"/>
+    </linearGradient>
+    <linearGradient id="tileEdge" x1="85" y1="15" x2="420" y2="499" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#284253" stop-opacity=".48"/><stop offset=".5" stop-color="#142d40" stop-opacity=".12"/><stop offset="1" stop-color="#122939" stop-opacity=".25"/>
+    </linearGradient>
+    <radialGradient id="lens" cx=".32" cy=".24" r=".9">
+      <stop stop-color="#103443"/><stop offset=".42" stop-color="#02202c"/><stop offset=".77" stop-color="#001620"/><stop offset="1" stop-color="#053d4d"/>
+    </radialGradient>
+    <radialGradient id="reflection" cx=".23" cy=".18" r=".69">
+      <stop stop-color="#9bc5df" stop-opacity=".23"/><stop offset=".30" stop-color="#6d9eba" stop-opacity=".14"/><stop offset=".75" stop-color="#356b91" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="95" y1="256" x2="285" y2="476" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#128bd1"/><stop offset=".35" stop-color="#0878c7"/><stop offset=".72" stop-color="#0755ac"/><stop offset="1" stop-color="#073c78"/>
+    </linearGradient>
+    <radialGradient id="panelLight" cx=".22" cy=".10" r=".95">
+      <stop stop-color="#46c7ef" stop-opacity=".32"/><stop offset=".46" stop-color="#1084d9" stop-opacity=".06"/><stop offset="1" stop-color="#0061b1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rim" x1="245" y1="36" x2="260" y2="477" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#316b94"/><stop offset=".28" stop-color="#214e6b"/><stop offset=".55" stop-color="#153c50"/><stop offset=".81" stop-color="#0c667b"/><stop offset="1" stop-color="#2495a9"/>
+    </linearGradient>
+    <linearGradient id="rimHighlight" x1="170" y1="42" x2="330" y2="473" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#65acd2" stop-opacity=".68"/><stop offset=".39" stop-color="#31749c" stop-opacity=".31"/><stop offset=".65" stop-color="#277c9c" stop-opacity=".38"/><stop offset="1" stop-color="#57d8df" stop-opacity=".80"/>
+    </linearGradient>
+    <radialGradient id="rimProfile" cx="253" cy="256" r="220" gradientUnits="userSpaceOnUse">
+      <stop offset=".970" stop-color="#0c2536" stop-opacity=".68"/><stop offset=".980" stop-color="#5b9dc5" stop-opacity=".15"/><stop offset=".990" stop-color="#1b4b65" stop-opacity=".34"/><stop offset="1" stop-color="#64bfde" stop-opacity=".45"/>
+    </radialGradient>
+    <radialGradient id="gridFade" cx=".50" cy=".50" r=".61">
+      <stop offset=".4" stop-color="white" stop-opacity=".30"/><stop offset=".75" stop-color="white" stop-opacity=".10"/><stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="outerFade"><rect width="512" height="512" fill="url(#gridFade)"/></mask>
+    <clipPath id="tileClip"><rect x="13" y="15" width="486" height="484" rx="104"/></clipPath>
+    <clipPath id="lensClip"><circle cx="253" cy="256" r="215.2"/></clipPath>
+    <clipPath id="panelClip"><path d="M0 256H224A86 86 0 0 1 310 342V512H0Z"/></clipPath>
+    <path id="grid" d="M -32 0 V 512 M -4 0 V 512 M 24 0 V 512 M 52 0 V 512 M 80 0 V 512 M 108 0 V 512 M 136 0 V 512 M 164 0 V 512 M 192 0 V 512 M 220 0 V 512 M 248 0 V 512 M 276 0 V 512 M 304 0 V 512 M 332 0 V 512 M 360 0 V 512 M 388 0 V 512 M 416 0 V 512 M 444 0 V 512 M 472 0 V 512 M 500 0 V 512 M 528 0 V 512 M 556 0 V 512 M0 -24 H512 M0 4 H512 M0 32 H512 M0 60 H512 M0 88 H512 M0 116 H512 M0 144 H512 M0 172 H512 M0 200 H512 M0 228 H512 M0 256 H512 M0 284 H512 M0 312 H512 M0 340 H512 M0 368 H512 M0 396 H512 M0 424 H512 M0 452 H512 M0 480 H512 M0 508 H512 M0 536 H512"/>
+  </defs>
+  <g id="background-tile">
+    <rect x="13" y="15" width="486" height="484" rx="104" fill="url(#tile)"/>
+    <g clip-path="url(#tileClip)" mask="url(#outerFade)"><use xlink:href="#grid" stroke="#375f77" stroke-width=".6" opacity=".24"/></g>
+    <rect x="13.5" y="15.5" width="485" height="483" rx="103.5" stroke="url(#tileEdge)"/>
+  </g>
+  <g id="lens-content" clip-path="url(#lensClip)">
+    <circle cx="253" cy="256" r="216" fill="url(#lens)"/>
+    <circle cx="253" cy="256" r="216" fill="url(#reflection)"/>
+    <g id="rounded-blue-ui" clip-path="url(#panelClip)">
+      <rect y="256" width="350" height="256" fill="url(#panel)"/>
+      <rect y="256" width="350" height="256" fill="url(#panelLight)"/>
+    </g>
+    <path d="M0 256H224A86 86 0 0 1 310 342V512" stroke="#30a6dc" stroke-width=".65" opacity=".44"/>
+    <g id="continuous-pixel-grid"><use xlink:href="#grid" stroke="#6cabc7" stroke-width=".55" opacity=".22"/></g>
+    <g id="alignment-guides" stroke="#04d4df" stroke-width="1.65" stroke-linecap="butt">
+      <path d="M20 256H490M332 20V490"/>
+    </g>
+  </g>
+  <g id="blue-glass-rim">
+    <circle cx="253" cy="256" r="217.7" stroke="#0b6789" stroke-width="9.5" opacity=".09"/>
+    <circle cx="253" cy="256" r="217.7" stroke="url(#rim)" stroke-width="5.5"/>
+    <circle cx="253" cy="256" r="217.7" stroke="url(#rimProfile)" stroke-width="5.5"/>
+    <circle cx="253" cy="256" r="220.1" stroke="url(#rimHighlight)" stroke-width=".7"/>
+    <circle cx="253" cy="256" r="215.25" stroke="url(#rimHighlight)" stroke-width=".6" opacity=".62"/>
+  </g>
+</svg>
