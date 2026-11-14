@@ -141,11 +141,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void Capture(bool magnified)
     {
-        try
-        {
-            var result = _lens.SaveCapture(magnified);
-            Notify("Capture saved", $"{Path.GetFileName(result.Path)}\n{result.Size.Width} × {result.Size.Height} pixels{(result.CopiedToClipboard ? " · copied to clipboard" : "")}");
-        }
+        try { _lens.SaveCapture(magnified); } // The toolbar confirms the save; no balloon over the game.
         catch (Exception e) { AppLog.Write(e.ToString()); Notify("Capture could not be saved", e.Message, ToolTipIcon.Warning); }
     }
 

@@ -50,7 +50,7 @@ internal sealed class SettingsForm : Form
         _zoom = new ShadeDropdown(AppSettings.ZoomLevels.Select(x => $"{x}×").ToArray(), Array.IndexOf(AppSettings.ZoomLevels, settings.Zoom));
         _size = new ShadeDropdown(AppSettings.Sizes.Select(x => $"{x} × {x}").ToArray(), Array.IndexOf(AppSettings.Sizes, settings.Size));
         _fps = new ShadeDropdown(AppSettings.FrameRates.Select(x => $"{x} fps").ToArray(), Array.IndexOf(AppSettings.FrameRates, settings.FramesPerSecond));
-        _grid = new ShadeToggle("Show grid", settings.ShowGrid);
+        _grid = new ShadeToggle("Visible at 4× and above", settings.ShowGrid);
         _opacity = new ShadeSlider(settings.GridOpacity);
         AddField(lens, "Monitor", null, _monitor);
         AddField(lens, "Magnification", null, _zoom);

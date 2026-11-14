@@ -2,9 +2,9 @@ namespace Loupe;
 
 internal sealed class ControlStrip : OverlayForm
 {
-    public const int LogicalWidth = 600, LogicalHeight = 140;
+    public const int LogicalWidth = 512, LogicalHeight = 110;
     private readonly Button _pin, _measure, _grid;
-    private readonly Label _zoom, _status, _hint, _live;
+    private readonly Label _zoom, _status, _live;
     private readonly ToolTip _toolTip = new();
     private readonly ContextMenuStrip _captureMenu = new();
     private readonly Dictionary<AppCommand, Button> _buttons = [];
@@ -17,10 +17,10 @@ internal sealed class ControlStrip : OverlayForm
     public ControlStrip()
     {
         Text = "Loupe controls"; ClientSize = new Size(LogicalWidth, LogicalHeight); Padding = new Padding(12, 9, 12, 9);
-        var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 4, Margin = Padding.Empty };
+        var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3, Margin = Padding.Empty };
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27)); layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
-        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27)); layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         _live = new Label { Text = "●  LOUPE  /  LIVE", ForeColor = Theme.Sky, Dock = DockStyle.Fill, Font = new Font("Segoe UI", 9, FontStyle.Bold), Cursor = Cursors.SizeAll };
         _live.MouseDown += (_, e) => { if (e.Button == MouseButtons.Left) { NativeMethods.ReleaseCapture(); NativeMethods.SendMessageW(Handle, 0xA1, 2, 0); } };
         layout.Controls.Add(_live, 0, 0);
@@ -45,8 +45,8 @@ internal sealed class ControlStrip : OverlayForm
         }
         layout.Controls.Add(controls, 0, 1);
         _status = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, ForeColor = Theme.Text, Margin = Padding.Empty, Font = new Font("Consolas", 9) };
-        _hint = new Label { Dock = DockStyle.Fill, ForeColor = Theme.Muted, Margin = Padding.Empty, Font = new Font("Segoe UI", 8.5f) };
-        layout.Controls.Add(_status, 0, 2); layout.Controls.Add(_hint, 0, 3); Controls.Add(layout);
+        _toolTip.SetToolTip(_live, "Drag to move the lens · Clicks pass through unless measuring");
+        layout.Controls.Add(_status, 0, 2); Controls.Add(layout);
     }
 
     private Button ActionButton(string label, AppCommand command, int width)
@@ -87,15 +87,11 @@ internal sealed class ControlStrip : OverlayForm
         var state = (pinned, measuring, settings.ShowGrid, settings.Zoom);
         if (_lastState != state)
         {
-            _pin.Text = pinned ? "Pinned" : "Pin"; _measure.Text = measuring ? "Inspect" : "Measure"; _zoom.Text = $"{settings.Zoom}×";
+            _zoom.Text = $"{settings.Zoom}×"; // Pin and Measure keep their names; the highlight shows the state.
             Theme.SetActive(_pin, pinned); Theme.SetActive(_measure, measuring); Theme.SetActive(_grid, settings.ShowGrid);
             _live.Text = pinned ? "●  LOUPE  /  LIVE · PINNED" : "●  LOUPE  /  LIVE · FOLLOWING CURSOR";
             _live.ForeColor = measuring ? Theme.Pink : Theme.Sky;
-            _hint.Text = measuring
-                ? "Drag: ruler · Right-click: guides · Middle-drag: pan"
-                : "Clicks pass through · Measure to place guides · Drag the header to move";
             _lastState = state;
-            _toolTip.SetToolTip(_hint, _hint.Text);
         }
         if (DateTime.UtcNow < _noticeUntil) status = _notice;
         if (status != _lastStatus) { _status.Text = status; _lastStatus = status; }

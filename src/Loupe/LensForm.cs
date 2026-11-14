@@ -73,13 +73,14 @@ internal sealed class LensForm : OverlayForm
     public void Open(Screen screen, Point center, bool pinned = false)
     {
         if (IsOpen) CloseInspection();
+        // Guides are screen coordinates, so they stay valid until cleared or the monitor changes.
+        if (screen.DeviceName != _screen?.DeviceName) _guides.Clear();
         _screen = screen;
         _center = screen.Bounds.Contains(center) ? center : new Point(screen.Bounds.Left + screen.Bounds.Width / 2, screen.Bounds.Top + screen.Bounds.Height / 2);
         Pinned = pinned;
         Measuring = false;
         _hover = null;
         _measurement = null;
-        _guides.Clear();
         _strip.RefreshShortcuts(_settings);
         _recoveryAttempts = 0;
         _retryAfter = DateTime.MinValue;
@@ -177,7 +178,9 @@ internal sealed class LensForm : OverlayForm
             if (!_renderer!.Render(viewport, _settings, crosshair, _guides, _measurement, Measuring, force: _dirty)) return;
             _dirty = false;
             _recoveryAttempts = 0;
-            string status = _measurement?.Label ?? (_hover is { } p ? $"X {p.X}   Y {p.Y}   ·   physical pixels" : $"{viewport.Source.Width} × {viewport.Source.Height} px   ·   {_settings.Zoom}×   ·   physical pixels");
+            // Following or pinned: the pixel at the crosshair. Measuring: the boundary under the pointer, or how to start.
+            string status = _measurement?.Label ?? (_hover is { } p ? $"X {p.X}   Y {p.Y}"
+                : Measuring ? "Drag: ruler · Right-click: guides · Middle-drag: pan" : $"X {_center.X}   Y {_center.Y}");
             _strip.UpdateState(_settings, Pinned, Measuring, status);
             if (!Visible)
             {
