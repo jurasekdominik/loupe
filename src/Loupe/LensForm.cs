@@ -180,7 +180,7 @@ internal sealed class LensForm : OverlayForm
             _recoveryAttempts = 0;
             // Following or pinned: the pixel at the crosshair. Measuring: the boundary under the pointer, or how to start.
             string status = _measurement?.Label ?? (_hover is { } p ? $"X {p.X}   Y {p.Y}"
-                : Measuring ? "Drag: ruler · Right-click: guides · Middle-drag: pan" : $"X {_center.X}   Y {_center.Y}");
+                : Measuring ? "Drag: ruler · Right-click: guides" : $"X {_center.X}   Y {_center.Y}");
             _strip.UpdateState(_settings, Pinned, Measuring, status);
             if (!Visible)
             {

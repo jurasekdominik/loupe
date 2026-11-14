@@ -2,7 +2,7 @@ namespace Loupe;
 
 internal sealed class ControlStrip : OverlayForm
 {
-    public const int LogicalWidth = 512, LogicalHeight = 110;
+    public const int LogicalWidth = 512, LogicalHeight = 84;
     private readonly Button _pin, _measure, _grid;
     private readonly Label _zoom, _status, _live;
     private readonly ToolTip _toolTip = new();
@@ -17,13 +17,20 @@ internal sealed class ControlStrip : OverlayForm
     public ControlStrip()
     {
         Text = "Loupe controls"; ClientSize = new Size(LogicalWidth, LogicalHeight); Padding = new Padding(12, 9, 12, 9);
-        var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3, Margin = Padding.Empty };
+        var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2, Margin = Padding.Empty };
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27)); layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
-        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        _live = new Label { Text = "●  LOUPE  /  LIVE", ForeColor = Theme.Sky, Dock = DockStyle.Fill, Font = new Font("Segoe UI", 9, FontStyle.Bold), Cursor = Cursors.SizeAll };
-        _live.MouseDown += (_, e) => { if (e.Button == MouseButtons.Left) { NativeMethods.ReleaseCapture(); NativeMethods.SendMessageW(Handle, 0xA1, 2, 0); } };
-        layout.Controls.Add(_live, 0, 0);
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27)); layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        // One header row: the mode on the left, the position or measurement on the right. Both drag the lens.
+        _live = new Label { Text = "●  LIVE", ForeColor = Theme.Sky, Dock = DockStyle.Left, Width = 170, TextAlign = ContentAlignment.MiddleLeft, Font = new Font("Segoe UI", 9, FontStyle.Bold), Cursor = Cursors.SizeAll };
+        _status = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleRight, ForeColor = Theme.Sky, Font = new Font("Consolas", 10, FontStyle.Bold), Cursor = Cursors.SizeAll };
+        var header = new Panel { Dock = DockStyle.Fill, Margin = Padding.Empty };
+        header.Controls.Add(_status); header.Controls.Add(_live); // The filling label goes first so it is laid out last.
+        foreach (var label in new[] { _live, _status })
+        {
+            label.MouseDown += (_, e) => { if (e.Button == MouseButtons.Left) { NativeMethods.ReleaseCapture(); NativeMethods.SendMessageW(Handle, 0xA1, 2, 0); } };
+            _toolTip.SetToolTip(label, "Drag to move the lens · Clicks pass through unless measuring");
+        }
+        layout.Controls.Add(header, 0, 0);
         var controls = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false, Margin = Padding.Empty };
         _pin = ActionButton("Pin", AppCommand.TogglePin, 58);
         _measure = ActionButton("Measure", AppCommand.ToggleMeasure, 74);
@@ -44,9 +51,7 @@ internal sealed class ControlStrip : OverlayForm
             item.Click += (_, _) => CommandRequested?.Invoke(command); _captureMenu.Items.Add(item);
         }
         layout.Controls.Add(controls, 0, 1);
-        _status = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, ForeColor = Theme.Text, Margin = Padding.Empty, Font = new Font("Consolas", 9) };
-        _toolTip.SetToolTip(_live, "Drag to move the lens · Clicks pass through unless measuring");
-        layout.Controls.Add(_status, 0, 2); Controls.Add(layout);
+        Controls.Add(layout);
     }
 
     private Button ActionButton(string label, AppCommand command, int width)
@@ -89,7 +94,7 @@ internal sealed class ControlStrip : OverlayForm
         {
             _zoom.Text = $"{settings.Zoom}×"; // Pin and Measure keep their names; the highlight shows the state.
             Theme.SetActive(_pin, pinned); Theme.SetActive(_measure, measuring); Theme.SetActive(_grid, settings.ShowGrid);
-            _live.Text = pinned ? "●  LOUPE  /  LIVE · PINNED" : "●  LOUPE  /  LIVE · FOLLOWING CURSOR";
+            _live.Text = pinned ? "●  LIVE · PINNED" : "●  LIVE · FOLLOWING";
             _live.ForeColor = measuring ? Theme.Pink : Theme.Sky;
             _lastState = state;
         }

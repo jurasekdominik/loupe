@@ -37,9 +37,9 @@ Settings → Shortcuts shows the five main bindings. Click a binding, press and 
 6. **Middle-drag**, or use the pan bindings, to move the sampled area. Guides and ruler endpoints retain their original screen coordinates.
 7. Leave measurement mode to pass clicks through again. Guides remain until cleared, including across hiding and reopening the lens; they reset when Loupe exits or the monitor changes. The ruler starts fresh on each reopen.
 
-The toolbar's status line shows the X/Y of the pixel at the crosshair while following or pinned, the boundary under the pointer while measuring, and the ruler's width and height once one is placed.
+The right side of the toolbar's header shows, in blue, the X/Y of the pixel at the crosshair while following or pinned, the boundary under the pointer while measuring, and the ruler's width and height once one is placed.
 
-The wheel zooms inside the interactive lens; the toolbar also has zoom buttons. Drag the **LOUPE / LIVE** header to move the lens and controls together. Lens-size commands expand or shrink the inspection area.
+The wheel zooms inside the interactive lens; the toolbar also has zoom buttons. Drag the toolbar's header row to move the lens and controls together. Lens-size commands expand or shrink the inspection area.
 
 ## Capture images
 
