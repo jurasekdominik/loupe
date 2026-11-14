@@ -57,7 +57,7 @@ public sealed record KeyBinding(Keys Key = Keys.None, KeyModifiers Modifiers = K
     }
 }
 
-public sealed record CommandDefinition(AppCommand Command, string Label, string Description, KeyBinding LegacyDefault,
+public sealed record CommandDefinition(AppCommand Command, string Label, KeyBinding LegacyDefault,
     bool AlwaysAvailable = false, bool WhileVisible = false, bool PointerRequired = false)
 {
     public KeyBinding Default => CommandCatalog.Main.Contains(Command) ? LegacyDefault : new();
@@ -69,31 +69,31 @@ public static class CommandCatalog
     public static IReadOnlyList<AppCommand> Main { get; } = [AppCommand.ToggleLoupe, AppCommand.ZoomIn, AppCommand.ZoomOut, AppCommand.TogglePin, AppCommand.ToggleMeasure];
     public static IReadOnlyList<CommandDefinition> All { get; } = new CommandDefinition[]
     {
-        new(AppCommand.ToggleLoupe, "Show / hide loupe", "Toggle a persistent live view", new(Keys.F10)),
-        new(AppCommand.ToggleEnabled, "Enable / disable", "Keep the app in the tray", new(Keys.F10, CA), AlwaysAvailable: true),
-        new(AppCommand.Peek, "Hold to peek", "Release to dismiss · modifiers alone are supported", new(Keys.Space, CA)),
-        new(AppCommand.Hide, "Dismiss loupe", "Close the current inspection", new(Keys.Escape), WhileVisible: true),
-        new(AppCommand.TogglePin, "Pin / follow area", "Keep the sampled area fixed and live", new(Keys.L, CA), WhileVisible: true),
-        new(AppCommand.ToggleMeasure, "Measurement mode", "Interact with the enlarged pixels", new(Keys.M, CA), WhileVisible: true),
-        new(AppCommand.Clear, "Clear guides & ruler", "Start a fresh measurement", new(Keys.Back, CA), WhileVisible: true),
-        new(AppCommand.ToggleGrid, "Pixel grid", "Show or hide pixel boundaries", new(Keys.G, CA), WhileVisible: true),
-        new(AppCommand.ZoomIn, "Zoom in", "Increase integer magnification", new(Keys.Oemplus, CA), WhileVisible: true),
-        new(AppCommand.ZoomOut, "Zoom out", "Decrease integer magnification", new(Keys.OemMinus, CA), WhileVisible: true),
-        new(AppCommand.GuideHorizontal, "Horizontal guide", "At the pointer inside the interactive lens", new(Keys.H), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.GuideVertical, "Vertical guide", "At the pointer inside the interactive lens", new(Keys.V), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.GuideCrosshair, "Both crosshair guides", "Pin both axes at the current pointer", new(), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.RulerPoint, "Place ruler point", "Press once for start, again for end", new(Keys.R), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.CaptureArea, "Capture original area", "A PNG at original pixel resolution", new(Keys.S, CA), WhileVisible: true),
-        new(AppCommand.CaptureView, "Capture magnified view", "A PNG including the grid and guides", new(Keys.S, CA | KeyModifiers.Shift), WhileVisible: true),
-        new(AppCommand.PanLeft, "Pan left", "Move the source by one physical pixel", new(Keys.Left), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.PanRight, "Pan right", "Move the source by one physical pixel", new(Keys.Right), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.PanUp, "Pan up", "Move the source by one physical pixel", new(Keys.Up), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.PanDown, "Pan down", "Move the source by one physical pixel", new(Keys.Down), WhileVisible: true, PointerRequired: true),
-        new(AppCommand.IncreaseSize, "Larger lens", "Increase the viewing area", new(Keys.OemCloseBrackets, CA), WhileVisible: true),
-        new(AppCommand.DecreaseSize, "Smaller lens", "Decrease the viewing area", new(Keys.OemOpenBrackets, CA), WhileVisible: true),
-        new(AppCommand.OpenSettings, "Open settings", "Preferences and shortcuts", new(Keys.Oemcomma, CA), AlwaysAvailable: true),
-        new(AppCommand.OpenCaptureFolder, "Open captures folder", "Browse saved PNG images", new(), AlwaysAvailable: true),
-        new(AppCommand.Exit, "Exit Loupe", "Quit the tray app", new(), AlwaysAvailable: true)
+        new(AppCommand.ToggleLoupe, "Show / hide loupe", new(Keys.F10)),
+        new(AppCommand.ToggleEnabled, "Enable / disable", new(Keys.F10, CA), AlwaysAvailable: true),
+        new(AppCommand.Peek, "Hold to peek", new(Keys.Space, CA)),
+        new(AppCommand.Hide, "Dismiss loupe", new(Keys.Escape), WhileVisible: true),
+        new(AppCommand.TogglePin, "Pin / follow area", new(Keys.L, CA), WhileVisible: true),
+        new(AppCommand.ToggleMeasure, "Measurement mode", new(Keys.M, CA), WhileVisible: true),
+        new(AppCommand.Clear, "Clear guides & ruler", new(Keys.Back, CA), WhileVisible: true),
+        new(AppCommand.ToggleGrid, "Pixel grid", new(Keys.G, CA), WhileVisible: true),
+        new(AppCommand.ZoomIn, "Zoom in", new(Keys.Oemplus, CA), WhileVisible: true),
+        new(AppCommand.ZoomOut, "Zoom out", new(Keys.OemMinus, CA), WhileVisible: true),
+        new(AppCommand.GuideHorizontal, "Horizontal guide", new(Keys.H), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.GuideVertical, "Vertical guide", new(Keys.V), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.GuideCrosshair, "Both crosshair guides", new(), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.RulerPoint, "Place ruler point", new(Keys.R), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.CaptureArea, "Capture original area", new(Keys.S, CA), WhileVisible: true),
+        new(AppCommand.CaptureView, "Capture magnified view", new(Keys.S, CA | KeyModifiers.Shift), WhileVisible: true),
+        new(AppCommand.PanLeft, "Pan left", new(Keys.Left), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.PanRight, "Pan right", new(Keys.Right), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.PanUp, "Pan up", new(Keys.Up), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.PanDown, "Pan down", new(Keys.Down), WhileVisible: true, PointerRequired: true),
+        new(AppCommand.IncreaseSize, "Larger lens", new(Keys.OemCloseBrackets, CA), WhileVisible: true),
+        new(AppCommand.DecreaseSize, "Smaller lens", new(Keys.OemOpenBrackets, CA), WhileVisible: true),
+        new(AppCommand.OpenSettings, "Open settings", new(Keys.Oemcomma, CA), AlwaysAvailable: true),
+        new(AppCommand.OpenCaptureFolder, "Open captures folder", new(), AlwaysAvailable: true),
+        new(AppCommand.Exit, "Exit Loupe", new(), AlwaysAvailable: true)
     };
     // The other actions remain assignable, without reserving extra game keys by default.
     public static KeyBinding DefaultBinding(AppCommand command) => Get(command).Default;
@@ -127,6 +127,7 @@ internal sealed class KeyboardState
 {
     private readonly HashSet<Keys> _down = [];
     public bool Set(Keys key, bool down) => down ? _down.Add(key) : _down.Remove(key);
+    public void Forget(Predicate<Keys> released) => _down.RemoveWhere(released);
     public KeyModifiers Modifiers =>
         ((_down.Contains(Keys.ControlKey) || _down.Contains(Keys.LControlKey) || _down.Contains(Keys.RControlKey)) ? KeyModifiers.Control : 0) |
         ((_down.Contains(Keys.Menu) || _down.Contains(Keys.LMenu) || _down.Contains(Keys.RMenu)) ? KeyModifiers.Alt : 0) |

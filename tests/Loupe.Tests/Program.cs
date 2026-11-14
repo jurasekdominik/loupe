@@ -91,6 +91,8 @@ Test("Settings reject invalid zoom, size and key values", () =>
     settings.Validate();
     Equal(8, settings.Zoom); Equal(448, settings.Size); Equal(60, settings.FramesPerSecond);
     Equal(Keys.F10, settings.Binding(AppCommand.ToggleLoupe).Key); Equal(70, settings.GridOpacity);
+    var retired = new AppSettings { FramesPerSecond = 120 }; retired.Validate();
+    Equal(60, retired.FramesPerSecond); // 120 was removed: the refresh timer cannot reach it.
 });
 
 Test("Settings round-trip and recover from a partial file", () =>

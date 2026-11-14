@@ -20,7 +20,7 @@ public sealed class AppSettings
     public Dictionary<AppCommand, KeyBinding> Bindings { get; set; } = CommandCatalog.Defaults();
 
     public static int[] ZoomLevels { get; } = [2, 4, 6, 8, 12, 16, 24, 32];
-    public static int[] FrameRates { get; } = [30, 60, 120];
+    public static int[] FrameRates { get; } = [30, 60]; // shortcut: the WM_TIMER loop tops out near 64 Hz, switch to a waitable timer if 120 is wanted
     public static int[] Sizes { get; } = [320, 448, 576, 704];
     public static string SettingsPath => Path.Combine(AppLog.DirectoryPath, "settings.json");
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true, Converters = { new JsonStringEnumConverter() } };

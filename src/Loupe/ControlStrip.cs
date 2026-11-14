@@ -75,6 +75,13 @@ internal sealed class ControlStrip : OverlayForm
         _notice = text; _noticeUntil = DateTime.UtcNow.AddSeconds(4);
     }
 
+    // True once, when a shown notice has run out and the status needs a redraw.
+    public bool NoticeExpired()
+    {
+        if (_notice.Length == 0 || DateTime.UtcNow < _noticeUntil) return false;
+        _notice = ""; return true;
+    }
+
     public void UpdateState(AppSettings settings, bool pinned, bool measuring, string status)
     {
         var state = (pinned, measuring, settings.ShowGrid, settings.Zoom);

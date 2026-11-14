@@ -11,6 +11,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private readonly LensForm _lens;
     private KeyboardHook? _keyboard;
     private bool _latched, _peekHeld, _suppressPeek, _settingsOpen, _disposed;
+    private string _lastClashes = "";
 
     public TrayApplicationContext()
     {
@@ -94,7 +95,9 @@ internal sealed class TrayApplicationContext : ApplicationContext
             if (!available || binding.IsEmpty) continue;
             if (!_hotkeys.Register((int)definition.Command, binding)) missing.Add(definition.Label);
         }
-        if (missing.Count > 0) Notify("Some shortcuts are in use", $"Choose new bindings in Settings for: {string.Join(", ", missing)}. The tray and toolbar remain available.", ToolTipIcon.Warning);
+        // Warn once per set of clashes, not on every show of the lens.
+        string clashes = string.Join(", ", missing);
+        if (missing.Count > 0 && clashes != _lastClashes) { _lastClashes = clashes; Notify("Some shortcuts are in use", $"Choose new bindings in Settings for: {string.Join(", ", missing)}. The tray and toolbar remain available.", ToolTipIcon.Warning); }
     }
 
     private void Execute(AppCommand command)
@@ -225,7 +228,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
             };
             return form.ShowDialog() == DialogResult.OK;
         }
-        finally { _settingsOpen = false; _peekHeld = false; _suppressPeek = false; ConfigureInput(); }
+        finally { _settingsOpen = false; _peekHeld = false; _suppressPeek = false; _lastClashes = ""; ConfigureInput(); }
     }
 
     private void Notify(string title, string message, ToolTipIcon icon = ToolTipIcon.Info) => _tray.ShowBalloonTip(3500, title, message, icon);

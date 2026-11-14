@@ -95,6 +95,8 @@ internal sealed class LensRenderer : IDisposable
         bool updated = _capture.Update();
         if (_capture.Texture is null) return false;
         if (!updated && !force && savePath is null && receiveCapture is null) return HasPresentedFrame;
+        // Each new frame is a different pool texture; rewrap it rather than copying the monitor.
+        if (updated) { _desktop?.Dispose(); _desktop = null; }
         if (_desktop is null && _capture.Texture is not null)
         {
             using var surface = _capture.Texture.QueryInterface<IDXGISurface>();
@@ -123,26 +125,29 @@ internal sealed class LensRenderer : IDisposable
                 Line(destination.Left, y, destination.Right, y);
         }
 
+        // A 3 px shadow would hide most of a source pixel below 8×.
+        bool shadow = viewport.Zoom >= 8;
         foreach (var guide in guides)
         {
             PointF p = viewport.ToLens(guide.Vertical ? new Point(guide.Coordinate, viewport.Source.Top) : new Point(viewport.Source.Left, guide.Coordinate));
-            GuideLine(guide.Vertical, guide.Vertical ? p.X : p.Y, destination, Pink);
+            GuideLine(guide.Vertical, guide.Vertical ? p.X : p.Y, destination, Pink, shadow);
         }
 
         if (cursor is { } position)
         {
             var p = viewport.ToLens(position);
-            GuideLine(true, p.X, destination, measuring ? Sky : new Color4(1, 1, 1, .65f));
-            GuideLine(false, p.Y, destination, measuring ? Sky : new Color4(1, 1, 1, .65f));
+            GuideLine(true, p.X, destination, measuring ? Sky : new Color4(1, 1, 1, .65f), shadow);
+            GuideLine(false, p.Y, destination, measuring ? Sky : new Color4(1, 1, 1, .65f), shadow);
         }
 
         if (measurement is { } ruler)
         {
             var start = viewport.ToLens(ruler.Start);
             var end = viewport.ToLens(ruler.End);
-            var rect = new Rect(Math.Min(start.X, end.X) + .5f, Math.Min(start.Y, end.Y) + .5f, Math.Abs(start.X - end.X), Math.Abs(start.Y - end.Y));
+            // Both edges are drawn on the outermost lens pixels inside the measured area.
+            var rect = new Rect(Math.Min(start.X, end.X) + .5f, Math.Min(start.Y, end.Y) + .5f, Math.Max(0, Math.Abs(start.X - end.X) - 1), Math.Max(0, Math.Abs(start.Y - end.Y) - 1));
             _brush.Color = Shadow;
-            _context.DrawRectangle(rect, _brush, 3);
+            if (shadow) _context.DrawRectangle(rect, _brush, 3);
             _brush.Color = Pink;
             _context.DrawRectangle(rect, _brush, 1);
             Line(start.X - 5, start.Y, start.X + 5, start.Y);
@@ -174,11 +179,11 @@ internal sealed class LensRenderer : IDisposable
     private void Line(float x1, float y1, float x2, float y2, float width = 1) =>
         _context.DrawLine(new Vector2(x1 + .5f, y1 + .5f), new Vector2(x2 + .5f, y2 + .5f), _brush, width);
 
-    private void GuideLine(bool vertical, float position, Rectangle bounds, Color4 color)
+    private void GuideLine(bool vertical, float position, Rectangle bounds, Color4 color, bool shadow)
     {
         float x1 = vertical ? position : bounds.Left, x2 = vertical ? position : bounds.Right;
         float y1 = vertical ? bounds.Top : position, y2 = vertical ? bounds.Bottom : position;
-        _brush.Color = Shadow; Line(x1, y1, x2, y2, 3);
+        if (shadow) { _brush.Color = Shadow; Line(x1, y1, x2, y2, 3); }
         _brush.Color = color; Line(x1, y1, x2, y2);
     }
 

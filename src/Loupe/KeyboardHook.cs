@@ -30,6 +30,9 @@ internal sealed class KeyboardHook : IDisposable
             bool up = message == 0x101 || message == 0x105;
             if (down || up)
             {
+                // The lock screen and Ctrl+Alt+Del swallow key releases; forget keys Windows reports as up.
+                // Keys this hook swallowed never reach Windows' own state, so they are kept.
+                if (down) State.Forget(k => k != key && !_suppressed.Contains(k) && NativeMethods.GetAsyncKeyState((int)k) >= 0);
                 bool changed = State.Set(key, down);
                 bool suppress = _suppressed.Contains(key);
                 if (changed && KeyChanged?.Invoke(key, down) == true) suppress = true;

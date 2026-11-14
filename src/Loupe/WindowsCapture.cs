@@ -9,7 +9,7 @@ namespace Loupe;
 // ABI: Windows.Graphics.Capture and windows.graphics.capture.interop.h.
 internal sealed unsafe partial class WindowsCapture : IDisposable
 {
-    private nint _device, _item, _pool, _session;
+    private nint _device, _item, _pool, _session, _frame;
     private bool _initialized;
     private readonly SizeInt32 _size;
     private static readonly Guid Closable = new("30D5A829-7FA4-4026-83BB-D75BAE4EA99E");
@@ -79,7 +79,10 @@ internal sealed unsafe partial class WindowsCapture : IDisposable
         catch { Dispose(); throw; }
     }
 
-    public bool CopyLatest(ID3D11DeviceContext context, ID3D11Device device, ref ID3D11Texture2D? destination)
+    // Hands out the newest frame's own texture and keeps that frame open until the
+    // next one arrives, so the monitor is never copied. The pool's second buffer
+    // receives new frames meanwhile.
+    public bool AcquireLatest(ref ID3D11Texture2D? texture)
     {
         nint latest = 0;
         try
@@ -104,23 +107,15 @@ internal sealed unsafe partial class WindowsCapture : IDisposable
                 try
                 {
                     Guid textureId = typeof(ID3D11Texture2D).GUID;
-                    nint texture;
-                    Check(((delegate* unmanaged[Stdcall]<nint, Guid*, nint*, int>)Method(access, 3))(access, &textureId, &texture));
-                    using var source = new ID3D11Texture2D(texture);
-                    if (destination is null)
-                    {
-                        var description = source.Description;
-                        description.BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget;
-                        description.Usage = ResourceUsage.Default;
-                        description.CPUAccessFlags = CpuAccessFlags.None;
-                        description.MiscFlags = ResourceOptionFlags.None;
-                        destination = device.CreateTexture2D(description);
-                    }
-                    context.CopyResource(destination, source);
+                    nint pointer;
+                    Check(((delegate* unmanaged[Stdcall]<nint, Guid*, nint*, int>)Method(access, 3))(access, &textureId, &pointer));
+                    texture?.Dispose();
+                    texture = new ID3D11Texture2D(pointer);
                 }
                 finally { Release(ref access); }
             }
             finally { Release(ref surface); }
+            Close(ref _frame); _frame = latest; latest = 0;
             return true;
         }
         finally { Close(ref latest); }
@@ -146,7 +141,7 @@ internal sealed unsafe partial class WindowsCapture : IDisposable
     }
     public void Dispose()
     {
-        Close(ref _session); Close(ref _pool); Release(ref _item); Release(ref _device);
+        Close(ref _frame); Close(ref _session); Close(ref _pool); Release(ref _item); Release(ref _device);
         if (_initialized) { RoUninitialize(); _initialized = false; }
     }
 

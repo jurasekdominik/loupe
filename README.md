@@ -68,7 +68,7 @@ The on-screen GPU checks run at 100% scaling. Coordinate tests cover simulated s
 
 ## Performance and preferences
 
-Windows Graphics Capture, cached frames, cropping and nearest-neighbor enlargement stay on the GPU. Visible refresh is capped at 30, 60 or 120 fps, with 60 as the default. The capture session also receives that interval on Windows versions which support it. Source update rate and scheduling affect actual refresh; unchanged frames do not need to be redrawn.
+Windows Graphics Capture, cached frames, cropping and nearest-neighbor enlargement stay on the GPU. Visible refresh is capped at 30 or 60 fps, with 60 as the default. Each new frame is drawn straight from the capture buffer, without copying the monitor image. The capture session also receives that interval on Windows versions which support it. Source update rate and scheduling affect actual refresh; unchanged frames do not need to be redrawn.
 
 Opening prepares the first captured GPU frame while the lens is hidden, then reveals the lens and controls together. A quick second toggle cancels opening. Hiding the lens stops its timer and releases capture/graphics resources, including the native capture session and frame pool. With the five default bindings, no background keyboard hook is needed; optional peek and pointer commands enable one when assigned. Disabling shortcuts removes that listener; the tray and any assigned always-available actions remain. Idle work is event-driven; constant zero usage and in-game frame rates are not guaranteed.
 

@@ -52,7 +52,7 @@ internal sealed class DesktopCapture : IDisposable
     // Frames stay on the GPU; there is no screen-sized CPU readback in normal operation.
     public bool Update()
     {
-        return _source!.CopyLatest(Context, Device, ref _texture);
+        return _source!.AcquireLatest(ref _texture);
     }
 
     public Bitmap CaptureArea(Rectangle desktopArea)
@@ -68,8 +68,8 @@ internal sealed class DesktopCapture : IDisposable
 
     public void Dispose()
     {
-        _source?.Dispose();
         Texture?.Dispose();
+        _source?.Dispose();
         Context?.ClearState();
         Context?.Flush();
         Context?.Dispose();

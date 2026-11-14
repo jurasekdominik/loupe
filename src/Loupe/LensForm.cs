@@ -89,15 +89,12 @@ internal sealed class LensForm : OverlayForm
         ApplyAppearance();
         PlaceNear(_center);
         NativeMethods.SetClickThrough(Handle, true);
-        try
-        {
-            IsOpen = true;
-            _timer.Interval = Math.Max(1, (int)Math.Ceiling(1000d / _settings.FramesPerSecond));
-            _timer.Start();
-            // Initialize capture on the next timer tick. A quick second toggle
-            // can cancel opening without starting and tearing down a GPU session.
-        }
-        catch { CloseInspection(); throw; }
+        IsOpen = true;
+        // WM_TIMER fires on ~15.6 ms steps; asking for slightly less than the frame time lands on 32 / 64 ticks per second.
+        _timer.Interval = Math.Max(1, 1000 / _settings.FramesPerSecond - 2);
+        _timer.Start();
+        // Initialize capture on the next timer tick. A quick second toggle
+        // can cancel opening without starting and tearing down a GPU session.
     }
 
     private void StartGraphics()
@@ -168,6 +165,7 @@ internal sealed class LensForm : OverlayForm
                 if (DateTime.UtcNow < _retryAfter) return;
                 StartGraphics();
             }
+            if (_strip.NoticeExpired()) _dirty = true;
             Point pointer = NativeMethods.CursorPosition;
             if (!Pinned && !_strip.HasOpenMenu && !Bounds.Contains(pointer) && !_strip.Bounds.Contains(pointer) && _screen.Bounds.Contains(pointer))
             {
@@ -274,6 +272,7 @@ internal sealed class LensForm : OverlayForm
             : _capture.CaptureArea(Viewport.Source);
         var result = Screenshots.Save(bitmap, folder ?? _settings.ScreenshotFolder, magnified ? "magnified" : "original", copy ?? _settings.CopyCapturesToClipboard);
         _strip.ShowNotice($"Saved {result.Size.Width} × {result.Size.Height} PNG{(result.CopiedToClipboard ? " · copied" : "")}");
+        _dirty = true; // The toolbar text refreshes with the next drawn frame.
         return result;
     }
 
